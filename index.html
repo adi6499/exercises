@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fitness Pro | Premium Daily Workouts</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="animate-fade">
+        <div>
+            <div class="subtitle" id="current-date">FRIDAY, APRIL 17</div>
+            <h1>Fitness Pro</h1>
+        </div>
+        <div class="streak-badge">
+            ⚡ <span id="streak-count">0</span> Day Streak
+        </div>
+    </header>
+
+    <!-- Workout Summary Card -->
+    <section id="home-view" class="animate-fade">
+        <div class="card">
+            <div class="subtitle">TOTAL BURN TODAY</div>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+                <h1 id="total-cals">0</h1>
+                <span style="color: var(--text-secondary); font-weight: 600;">KCAL</span>
+            </div>
+            <div class="progress-bar">
+                <div id="workout-progress" class="progress-fill"></div>
+            </div>
+            <div id="workout-summary-text" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 15px;">
+                0 of 0 exercises completed
+            </div>
+            <div class="goal-stats">
+                <div class="goal-item">
+                    <span id="weight-to-go">-- kg to goal</span>
+                    <small id="days-remaining">-- days left</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Today's Workout</h2>
+                <div class="intensity-toggle">
+                    <button id="toggle-standard" class="toggle-btn active">Standard</button>
+                    <button id="toggle-intense" class="toggle-btn">Fat Burn</button>
+                </div>
+            </div>
+            <div id="exercise-list">
+                <!-- Exercises will be injected here -->
+            </div>
+            <button class="btn-primary" id="start-workout-btn">START WORKOUT</button>
+        </div>
+    </section>
+
+    <!-- Weight Tracker View -->
+    <section id="weight-view" class="animate-fade hidden">
+        <div class="card">
+            <h2>Track Weight</h2>
+            <div class="tracker-input-group">
+                <input type="number" id="weight-input" placeholder="Enter weight (kg)" step="0.1">
+                <button class="btn-primary" style="margin-top: 0; width: auto; padding: 0 20px;" id="save-weight-btn">Log</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="weightChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Goal Settings</h2>
+            <div class="settings-group">
+                <div class="input-item">
+                    <label>Target Weight (kg)</label>
+                    <input type="number" id="target-weight-input" placeholder="72" step="0.1">
+                </div>
+                <div class="input-item">
+                    <label>Target Date</label>
+                    <input type="date" id="target-date-input">
+                </div>
+                <button class="btn-primary" id="save-goal-btn">Update Goal</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>History</h2>
+            <div id="weight-history-list" style="max-height: 200px; overflow-y: auto;">
+                <!-- History items injected here -->
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Guided Workout Overlay -->
+<div id="workout-overlay">
+    <div class="subtitle" id="overlay-step">EXERCISE 1 OF 6</div>
+    <h2 id="overlay-title" style="font-size: 32px; margin-top: 10px;">Jumping Jacks</h2>
+    
+    <div class="instruction-card">
+        <div class="timer-display" id="overlay-timer" style="margin: 0 0 20px 0;">00:30</div>
+        <div class="instruction-text" id="overlay-count">25 Reps</div>
+    </div>
+    
+    <div class="workout-controls">
+        <button class="btn-secondary" id="prev-btn">PREVIOUS</button>
+        <button class="btn-primary" id="next-btn" style="margin-top: 0;">NEXT</button>
+    </div>
+
+    <div style="width: 100%;">
+        <button class="btn-primary" id="stop-workout-btn" style="background: var(--bg-dark); color: var(--accent-red); box-shadow: none;">EXIT WORKOUT</button>
+    </div>
+</div>
+
+<!-- Navigation -->
+<nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home">
+        <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+    </div>
+    <div class="nav-item" id="nav-weight">
+        <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6V6h12v13zM9 9h6v2H9V9zm0 4h6v2H9v-2z"/></svg>
+        <span>Weight</span>
+    </div>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
