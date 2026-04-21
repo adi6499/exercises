@@ -1,615 +1,496 @@
-// --- Data & Constants ---
+// --- Constants & Data ---
+const API_URL = 'https://script.google.com/macros/s/AKfycbw0C3pwPgUVb48LNsmL6-5JA4qjevccrDoqHQZ-NEI9v0V__AZHQMMFWrBmQtALzWpL/exec';
+
 const EXERCISES_POOL = [
-    { name: "Jumping Jacks", cals: 0.3, reps: 40, difficulty: 'med', target: 'full' },
-    { name: "Push Ups", cals: 0.5, reps: 15, difficulty: 'med', target: 'up' },
-    { name: "Squats", cals: 0.4, reps: 20, difficulty: 'med', target: 'low' },
-    { name: "Lunges", cals: 0.4, reps: 20, difficulty: 'med', target: 'low' },
-    { name: "Burpees", cals: 1.0, reps: 10, difficulty: 'high', target: 'full' },
-    { name: "Plank", cals: 0.1, reps: 45, isTimed: true, difficulty: 'med', target: 'core' },
-    { name: "Mountain Climbers", cals: 0.3, reps: 30, difficulty: 'high', target: 'full' },
-    { name: "High Knees", cals: 0.2, reps: 50, difficulty: 'high', target: 'full' },
-    { name: "Crunches", cals: 0.2, reps: 25, difficulty: 'med', target: 'core' },
-    { name: "Glute Bridges", cals: 0.3, reps: 20, difficulty: 'low', target: 'low' },
-    { name: "Jump Squats", cals: 0.8, reps: 15, difficulty: 'high', target: 'low' },
-    { name: "Plank Jacks", cals: 0.4, reps: 25, difficulty: 'high', target: 'core' },
-    { name: "Bicycle Crunches", cals: 0.2, reps: 30, difficulty: 'med', target: 'core' },
-    { name: "Russian Twists", cals: 0.2, reps: 40, difficulty: 'med', target: 'core' },
-    { name: "Diamond Push-ups", cals: 0.7, reps: 10, difficulty: 'high', target: 'up' },
-    { name: "Side Lunges", cals: 0.4, reps: 20, difficulty: 'med', target: 'low' },
-    { name: "Skater Hops", cals: 0.5, reps: 30, difficulty: 'high', target: 'full' },
-    { name: "Commando Planks", cals: 0.6, reps: 12, difficulty: 'high', target: 'core' },
-    { name: "Star Jumps", cals: 0.8, reps: 15, difficulty: 'high', target: 'full' },
-    { name: "Tuck Jumps", cals: 1.2, reps: 10, difficulty: 'high', target: 'full' },
-    { name: "Shadow Boxing", cals: 0.2, reps: 50, difficulty: 'med', target: 'up' },
-    { name: "Walking Lunges", cals: 0.4, reps: 20, difficulty: 'med', target: 'low' },
-    { name: "Heel Touches", cals: 0.2, reps: 40, difficulty: 'low', target: 'core' },
-    { name: "Superman", cals: 0.2, reps: 15, difficulty: 'low', target: 'core' },
-    { name: "Burpee Tuck Jumps", cals: 1.5, reps: 5, difficulty: 'high', target: 'full' },
-    // New Low-Impact/Recovery Exercises
-    { name: "Neck Rolls", cals: 0.05, reps: 30, isTimed: true, difficulty: 'low', target: 'up' },
-    { name: "Shoulder Shrugs", cals: 0.05, reps: 20, difficulty: 'low', target: 'up' },
-    { name: "Arm Circles", cals: 0.05, reps: 30, isTimed: true, difficulty: 'low', target: 'up' },
-    { name: "Walking in Place", cals: 0.1, reps: 60, isTimed: true, difficulty: 'low', target: 'full' },
-    { name: "Wall Push-ups", cals: 0.2, reps: 15, difficulty: 'low', target: 'up' },
-    { name: "Knee Push-ups", cals: 0.3, reps: 12, difficulty: 'low', target: 'up' },
-    { name: "Cat-Cow Stretch", cals: 0.05, reps: 45, isTimed: true, difficulty: 'low', target: 'core' },
-    { name: "Child's Pose", cals: 0.02, reps: 60, isTimed: true, difficulty: 'low', target: 'core' },
-    { name: "Bird Dog", cals: 0.2, reps: 16, difficulty: 'low', target: 'core' },
-    { name: "Seated Leg Extensions", cals: 0.1, reps: 20, difficulty: 'low', target: 'low' },
-    { name: "Calf Raises", cals: 0.2, reps: 20, difficulty: 'low', target: 'low' },
-    { name: "Side Stretches", cals: 0.05, reps: 40, isTimed: true, difficulty: 'low', target: 'core' },
-    { name: "Wrist Rotations", cals: 0.02, reps: 30, isTimed: true, difficulty: 'low', target: 'up' },
-    { name: "Ankle Circles", cals: 0.02, reps: 30, isTimed: true, difficulty: 'low', target: 'low' },
-    { name: "Standing Quad Stretch", cals: 0.05, reps: 40, isTimed: true, difficulty: 'low', target: 'low' }
+    { name: "Jumping Jacks", cals: 0.3, baseReps: 40, unit: "Reps" },
+    { name: "Mountain Climbers", cals: 0.4, baseReps: 30, unit: "Reps" },
+    { name: "Burpees", cals: 1.1, baseReps: 10, unit: "Reps" },
+    { name: "High Knees", cals: 0.2, baseReps: 50, unit: "Reps" },
+    { name: "Squat Jumps", cals: 0.8, baseReps: 15, unit: "Reps" },
+    { name: "Push Ups", cals: 0.5, baseReps: 15, unit: "Reps" },
+    { name: "Plank Jacks", cals: 0.4, baseReps: 25, unit: "Reps" },
+    { name: "Skater Hops", cals: 0.5, baseReps: 30, unit: "Reps" }
 ];
 
-const WEEKLY_TARGETS = {
-    0: { label: 'Recovery & Mobility', target: 'full' }, // Sunday
-    1: { label: 'Full Body Cardio', target: 'full' },   // Monday
-    2: { label: 'Upper Body Focus', target: 'up' },     // Tuesday
-    3: { label: 'Lower Body Focus', target: 'low' },    // Wednesday
-    4: { label: 'Core & Stability', target: 'core' },   // Thursday
-    5: { label: 'Full Body Burn', target: 'full' },     // Friday
-    6: { label: 'Strength Focus', target: 'full' }      // Saturday
+const HEALTH_MESSAGES = {
+    DEFICIT: "You are in weight-loss deficit today ✅",
+    SURPLUS: "Try to stay within your calorie limit ⚠️",
+    STREAK: "Great job staying consistent! 🔥",
+    BURN: "Goal nearly reached. One more exercise? ⚡",
+    WELCOME: "Consistency is the key to fat loss 🧠"
 };
 
-const HEALTH_TIPS = [
-    "Rest is just as important as the workout. It's when your muscles grow!",
-    "Listen to your body. Sharp pain means stop; muscle burn means keep going.",
-    "Stay hydrated! Water helps reduce muscle soreness after exercise.",
-    "Gentle stretching can help increase blood flow and speed up recovery.",
-    "Consistency beats intensity. It's better to do a little every day than too much once a week.",
-    "Don't skip the warm-up, even for light recovery sessions."
-];
+// --- Storage Service ---
+const Storage = {
+    save(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    },
+    load(key, defaultValue) {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : defaultValue;
+    },
+    getTodayKey() {
+        return new Date().toISOString().split('T')[0];
+    }
+};
 
-// --- State Management ---
+// --- Application State ---
 let state = {
-    todayWorkout: [],
-    completedExercises: [],
-    workoutHistory: JSON.parse(localStorage.getItem('workoutHistory') || '[]'),
-    weightLogs: JSON.parse(localStorage.getItem('weightLogs') || '[]'),
-    intensityMode: localStorage.getItem('intensityMode') || 'standard',
-    goalWeight: parseFloat(localStorage.getItem('goalWeight')) || 72,
-    goalDate: localStorage.getItem('goalDate') || new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
-    height: parseFloat(localStorage.getItem('height')) || 171,
-    age: parseInt(localStorage.getItem('age')) || 27,
-    dailyTargetBurn: 0,
-    totalRounds: 1,
-    currentRound: 1,
-    isWorkoutActive: false,
-    currentExerciseIndex: 0,
-    totalCaloriesBurned: 0,
-    streak: 0,
-    workoutInterval: null,
-    voiceEnabled: localStorage.getItem('voiceEnabled') !== 'false',
-    isResting: false
+    user: Storage.load('fls_user', {
+        weight: 77.0,
+        targetWeight: 74.0,
+        height: 171,
+        age: 27,
+        calorieLimit: 1600,
+        burnGoal: 300
+    }),
+    daily: Storage.load(`fls_logs_${Storage.getTodayKey()}`, {
+        meals: [],
+        weight: null,
+        workout: {
+            exercises: [],
+            rounds: 1,
+            completed: [] // indices of completed exercises
+        }
+    }),
+    history: Storage.load('fls_history', []), // Array of {date, weight}
+    streak: Storage.load('fls_streak', { count: 0, lastDate: null }),
+    activeTab: 'dashboard'
 };
 
-const REST_DURATION = 15;
+let weightChart = null;
 
-// --- Core Logic ---
+// --- App Logic ---
 function init() {
-    calculateTargetBurn();
-    generateDailyWorkout();
-    updateDateDisplay();
-    calculateStreak();
-    renderHome();
+    setupNavigation();
     setupEventListeners();
+    updateDateDisplay();
     
-    // Set initial values for goal inputs
-    const targetWeightInput = document.getElementById('target-weight-input');
-    const targetDateInput = document.getElementById('target-date-input');
-    const heightInput = document.getElementById('profile-height-input');
-    const ageInput = document.getElementById('profile-age-input');
-
-    if (targetWeightInput) targetWeightInput.value = state.goalWeight;
-    if (targetDateInput) targetDateInput.value = new Date(state.goalDate).toISOString().split('T')[0];
-    if (heightInput) heightInput.value = state.height;
-    if (ageInput) ageInput.value = state.age;
+    // Seed today's workout if empty
+    if (state.daily.workout.exercises.length === 0) {
+        generateWorkout();
+    }
     
-    // Set initial intensity toggle state
-    updateToggleButtons();
-    updateVoiceUI();
-    updateBMI();
+    checkStreak();
+    render();
+    
+    // Cloud Refresh (Async)
+    loadAllCloudData();
 }
 
-function updateBMI() {
-    const currentWeight = state.weightLogs.length > 0 ? state.weightLogs[state.weightLogs.length - 1].weight : 77;
-    const bmi = currentWeight / ((state.height / 100) ** 2);
-    const bmiEl = document.getElementById('bmi-value');
-    const bmiLabelEl = document.getElementById('bmi-category');
+function generateWorkout() {
+    const seed = new Date().getDate(); // Random but same for the day
+    const shuffled = [...EXERCISES_POOL].sort(() => 0.5 - Math.random());
+    state.daily.workout.exercises = shuffled.slice(0, 6).map(ex => ({
+        ...ex,
+        reps: Math.round(ex.baseReps * (1 + (state.user.weight - 70) / 100)) // Scale reps slightly by weight
+    }));
+    state.daily.workout.rounds = Math.random() > 0.5 ? 2 : 1;
+    saveDaily();
+}
+
+function checkStreak() {
+    const today = Storage.getTodayKey();
+    const last = state.streak.lastDate;
+
+    if (last === today) return; // Already checked today
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayKey = yesterday.toISOString().split('T')[0];
+
+    if (last === yesterdayKey) {
+        // Streak continues (actual increment happens on workout completion if we want strict, 
+        // but here we mark 'app usage' as requested)
+    } else if (last !== null) {
+        // Streak broken
+        state.streak.count = 0;
+    }
     
-    if (bmiEl) bmiEl.textContent = bmi.toFixed(1);
+    state.streak.lastDate = today;
+    Storage.save('fls_streak', state.streak);
+}
+
+function setupNavigation() {
+    const tabs = ['dashboard', 'intake', 'progress'];
+    tabs.forEach(tab => {
+        document.getElementById(`nav-${tab}`).addEventListener('click', () => {
+            tabs.forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('active');
+            });
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).classList.add('active');
+            state.activeTab = tab;
+            if (tab === 'progress') renderChart();
+        });
+    });
+}
+
+function setupEventListeners() {
+    document.getElementById('add-meal-btn').addEventListener('click', addMeal);
+    document.getElementById('save-weight-btn').addEventListener('click', logWeight);
+    document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
+}
+
+function addMeal() {
+    const name = document.getElementById('food-name').value;
+    const cals = parseInt(document.getElementById('food-cals').value);
     
-    if (bmiLabelEl) {
-        let label = "Normal";
-        let color = "var(--accent-green)";
-        if (bmi < 18.5) { label = "Underweight"; color = "var(--accent-blue)"; }
-        else if (bmi >= 25 && bmi < 30) { label = "Overweight"; color = "var(--accent-orange)"; }
-        else if (bmi >= 30) { label = "Obese"; color = "var(--accent-red)"; }
-        
-        bmiLabelEl.textContent = label;
-        bmiLabelEl.style.color = color;
+    if (name && cals) {
+        const id = Date.now().toString(); // Consistent ID for sync/delete
+        state.daily.meals.push({ name, cals, id: id });
+        document.getElementById('food-name').value = '';
+        document.getElementById('food-cals').value = '';
+        saveDaily();
+        render();
+        // Cloud Sync
+        syncToCloud('food', { food: name, calories: cals, id: id });
     }
 }
 
-function calculateTargetBurn() {
-    if (state.intensityMode === 'fatburn_500') {
-        state.dailyTargetBurn = 500;
-        return;
-    }
-
-    const currentWeight = state.weightLogs.length > 0 ? state.weightLogs[state.weightLogs.length - 1].weight : 77;
-    const kgToGo = currentWeight - state.goalWeight;
-    if (kgToGo <= 0) {
-        state.dailyTargetBurn = 200; // Maintenance target
-        return;
-    }
-
-    const daysLeft = Math.ceil((new Date(state.goalDate) - new Date()) / (1000 * 60 * 60 * 24));
-    if (daysLeft <= 0) {
-        state.dailyTargetBurn = 500;
-        return;
-    }
-
-    // 1kg fat ≈ 7700 kcal. Let's assume 40% of deficit comes from exercise.
-    const totalCalorieDeficitNeeded = kgToGo * 7700;
-    const exerciseDeficitNeeded = totalCalorieDeficitNeeded * 0.4;
-    
-    // Personalization Factor based on Age and BMI
-    const bmi = currentWeight / ((state.height / 100) ** 2);
-    let personalizationMult = 1.0;
-    if (bmi > 25) personalizationMult = 0.9; // Slightly lower intensity for overweight
-    if (state.age > 40) personalizationMult *= 0.85;
-
-    state.dailyTargetBurn = Math.max(150, Math.min(800, Math.round((exerciseDeficitNeeded / daysLeft) * personalizationMult)));
+function deleteMeal(id) {
+    const idStr = id.toString();
+    state.daily.meals = state.daily.meals.filter(m => m.id.toString() !== idStr);
+    saveDaily();
+    render();
+    syncDeleteToCloud('food', idStr);
 }
 
-function updateToggleButtons() {
-    const btnRecovery = document.getElementById('toggle-recovery');
-    const btnStandard = document.getElementById('toggle-standard');
-    const btnIntense = document.getElementById('toggle-intense');
-    const btnFatBurn500 = document.getElementById('toggle-fatburn-500');
-
-    if (btnRecovery) btnRecovery.classList.toggle('active', state.intensityMode === 'recovery');
-    if (btnStandard) btnStandard.classList.toggle('active', state.intensityMode === 'standard');
-    if (btnIntense) btnIntense.classList.toggle('active', state.intensityMode === 'intense');
-    if (btnFatBurn500) btnFatBurn500.classList.toggle('active', state.intensityMode === 'fatburn_500');
+function editMeal(id) {
+    const idStr = id.toString();
+    const meal = state.daily.meals.find(m => m.id.toString() === idStr);
+    if (meal) {
+        document.getElementById('food-name').value = meal.name;
+        document.getElementById('food-cals').value = meal.cals;
+        deleteMeal(idStr); // Remove old entry
+    }
 }
 
-function generateDailyWorkout() {
-    const today = new Date();
-    const dateKey = today.toDateString();
-    const dayOfWeek = today.getDay();
-    const schedule = WEEKLY_TARGETS[dayOfWeek];
-    
-    let seed = 0;
-    for (let i = 0; i < dateKey.length; i++) seed += dateKey.charCodeAt(i);
-    
-    let modePool = [];
-    if (state.intensityMode === 'recovery') {
-        modePool = EXERCISES_POOL.filter(ex => ex.difficulty === 'low');
-    } else if (state.intensityMode === 'standard') {
-        modePool = EXERCISES_POOL.filter(ex => ex.difficulty === 'low' || ex.difficulty === 'med');
-    } else if (state.intensityMode === 'intense') {
-        modePool = EXERCISES_POOL.filter(ex => ex.difficulty === 'med' || ex.difficulty === 'high');
-    } else if (state.intensityMode === 'fatburn_500') {
-        modePool = EXERCISES_POOL.filter(ex => ex.difficulty === 'high');
-    }
-
-    // Handle 500kcal mode with fixed 8 exercises from screenshot
-    let selected = [];
-    if (state.intensityMode === 'fatburn_500') {
-        const names = ["Burpees", "Jumping Jacks", "Mountain Climbers", "High Knees", "Jump Squats", "Push Ups", "Plank", "Lunges"];
-        selected = names.map(name => EXERCISES_POOL.find(ex => ex.name === name)).filter(Boolean);
-        state.totalRounds = 3; // Reduced from 5 based on user feedback (manageability)
+function toggleExercise(index) {
+    const i = state.daily.workout.completed.indexOf(index);
+    if (i > -1) {
+        state.daily.workout.completed.splice(i, 1);
     } else {
-        // Filter by target for the day
-        let filteredPool = modePool.filter(ex => ex.target === schedule.target);
-        
-        // Fallback if target pool is too small
-        if (filteredPool.length < 4) {
-            filteredPool = [...modePool];
+        state.daily.workout.completed.push(index);
+        // On first completion of the day, ensure streak is active
+        if (state.daily.workout.completed.length === 1 && state.streak.count === 0) {
+            state.streak.count = 1;
+        } else if (state.daily.workout.completed.length === state.daily.workout.exercises.length) {
+            // Completed full workout
+            const lastData = Storage.load('fls_streak', {});
+            if (lastData.lastDate !== Storage.getTodayKey()) {
+                state.streak.count++;
+            }
         }
+        Storage.save('fls_streak', state.streak);
+    }
+    saveDaily();
+    render();
 
-        // Better Shuffling
-        const shuffled = [...filteredPool].sort((a, b) => {
-            const sumChars = (str) => str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            const valA = (sumChars(a.name) * seed) % 137;
-            const valB = (sumChars(b.name) * seed) % 137;
-            return valA - valB;
+    // Cloud Sync if marking complete
+    const ex = state.daily.workout.exercises[index];
+    if (state.daily.workout.completed.includes(index)) {
+        syncToCloud('workout', { 
+            exercise: ex.name, 
+            calories: Math.round(ex.cals * ex.reps * state.daily.workout.rounds),
+            completed: 'TRUE' 
+        });
+    }
+}
+
+function logWeight() {
+    const val = parseFloat(document.getElementById('weight-input').value);
+    if (val) {
+        state.daily.weight = val;
+        state.user.weight = val; // Update current weight in profile too
+        
+        const today = Storage.getTodayKey();
+        const existingIdx = state.history.findIndex(h => h.date === today);
+        if (existingIdx > -1) {
+            state.history[existingIdx].weight = val;
+        } else {
+            state.history.push({ date: today, weight: val });
+        }
+        
+        Storage.save('fls_user', state.user);
+        Storage.save('fls_history', state.history);
+        saveDaily();
+        render();
+        renderChart();
+        // Cloud Sync
+        syncToCloud('weight', { weight: val });
+    }
+}
+
+function saveSettings() {
+    state.user.weight = parseFloat(document.getElementById('set-target-weight').value); // Using target weight input
+    state.user.calorieLimit = parseInt(document.getElementById('set-calorie-limit').value);
+    state.user.height = parseInt(document.getElementById('set-height').value);
+    state.user.age = parseInt(document.getElementById('set-age').value);
+    Storage.save('fls_user', state.user);
+    render();
+    alert('Profile Updated');
+}
+
+function saveDaily() {
+    Storage.save(`fls_logs_${Storage.getTodayKey()}`, state.daily);
+}
+
+// --- Cloud Sync Service ---
+async function syncToCloud(type, data) {
+    try {
+        const payload = {
+            type: type,
+            date: Storage.getTodayKey(),
+            ...data
+        };
+
+        const statusEl = document.getElementById('cloud-status');
+        if (statusEl) statusEl.classList.add('syncing');
+
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        console.log(`Cloud Sync: ${type} data updated.`);
+        
+        if (statusEl) {
+            setTimeout(() => statusEl.classList.remove('syncing'), 1000);
+        }
+    } catch (e) {
+        console.error('Cloud Sync Failed:', e);
+    }
+}
+
+async function syncDeleteToCloud(subType, id) {
+    try {
+        const statusEl = document.getElementById('cloud-status');
+        if (statusEl) statusEl.classList.add('syncing');
+
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'delete', subType, id })
         });
 
-        const exerciseCount = 10;
-        selected = shuffled.slice(0, exerciseCount);
-    }
-    
-    // CIRCUIT TRAINING LOGIC
-    // 1. Calculate burn of one round with "Standard" manageable reps
-    let oneRoundBurn = selected.reduce((acc, ex) => acc + (ex.cals * ex.reps), 0);
-    
-    // 2. Determine how many rounds are needed to hit the daily target
-    const maxRounds = (state.intensityMode === 'fatburn_500') ? 3 : 4;
-    state.totalRounds = Math.min(maxRounds, Math.max(1, Math.ceil(state.dailyTargetBurn / oneRoundBurn)));
-    
-    // 3. Optional: slightly scale reps if rounds are too few or too many
-    // This keeps reps in a comfortable range
-    let finalScale = (state.dailyTargetBurn / state.totalRounds) / oneRoundBurn;
-    
-    state.todayWorkout = selected.map(ex => {
-        return {
-            ...ex,
-            reps: Math.max(10, Math.round(ex.reps * finalScale))
-        };
-    });
-    
-    const completedToday = state.workoutHistory.find(w => w.date === dateKey);
-    state.completedExercises = completedToday ? completedToday.exercises : [];
-    
-    const focusEl = document.getElementById('daily-focus');
-    if (focusEl) focusEl.textContent = schedule.label;
-
-    updateCals();
-    updateGoalUI();
-}
-
-function toggleSchedule() {
-    const modal = document.getElementById('schedule-overlay');
-    if (!modal) return;
-    
-    const isVisible = modal.style.display === 'flex';
-    modal.style.display = isVisible ? 'none' : 'flex';
-    
-    if (!isVisible) {
-        renderSchedule();
+        if (statusEl) {
+            setTimeout(() => statusEl.classList.remove('syncing'), 1000);
+        }
+    } catch (e) {
+        console.error('Cloud Delete Failed:', e);
     }
 }
 
-function renderSchedule() {
-    const container = document.getElementById('schedule-list');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    const today = new Date().getDay();
-    
-    for (let day = 0; day < 7; day++) {
-        const item = document.createElement('div');
-        item.className = `schedule-day-item ${day === today ? 'current-day' : ''}`;
+async function fetchFromCloud(type) {
+    try {
+        const statusEl = document.getElementById('cloud-status');
+        if (statusEl) statusEl.classList.add('syncing');
+
+        const response = await fetch(`${API_URL}?type=${type}`);
+        const result = await response.json();
         
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        item.innerHTML = `
-            <div style="font-weight: 700; color: ${day === today ? 'var(--accent-green)' : 'var(--text-main)'}">${days[day]}</div>
-            <div style="font-size: 14px; color: var(--text-secondary)">${WEEKLY_TARGETS[day].label}</div>
+        if (statusEl) statusEl.classList.remove('syncing');
+        
+        if (result.status === 'success') {
+            return result.data;
+        }
+        return [];
+    } catch (e) {
+        console.error(`Fetch error (${type}):`, e);
+        return [];
+    }
+}
+
+async function loadAllCloudData() {
+    const today = Storage.getTodayKey();
+    
+    // Fetch in parallel
+    const [workouts, food, weights] = await Promise.all([
+        fetchFromCloud('workout'),
+        fetchFromCloud('food'),
+        fetchFromCloud('weight')
+    ]);
+
+    let changed = false;
+
+    // 1. Sync Food for today
+    const cloudTodayMeals = food.filter(item => {
+        const itemDate = new Date(item.date).toISOString().split('T')[0];
+        return itemDate === today;
+    }).map(m => ({
+        name: m.food,
+        cals: m.calories,
+        id: m.id ? m.id.toString() : (Date.now() + Math.random()).toString()
+    }));
+    
+    if (cloudTodayMeals.length > 0) {
+        state.daily.meals = cloudTodayMeals;
+        changed = true;
+    }
+
+    // 2. Sync Weight History
+    if (weights.length > 0) {
+        state.history = weights.map(w => ({
+            date: new Date(w.date).toISOString().split('T')[0],
+            weight: parseFloat(w.weight)
+        }));
+        // Update current weight profile if latest cloud weight exists
+        state.user.weight = state.history[state.history.length - 1].weight;
+        changed = true;
+    }
+
+    // 3. Sync Workout Completion for today
+    const cloudTodayWorkouts = workouts.filter(item => {
+        const itemDate = new Date(item.date).toISOString().split('T')[0];
+        return itemDate === today && item.completed === 'TRUE';
+    });
+
+    if (cloudTodayWorkouts.length > 0) {
+        cloudTodayWorkouts.forEach(cw => {
+            const idx = state.daily.workout.exercises.findIndex(ex => ex.name === cw.exercise);
+            if (idx > -1 && !state.daily.workout.completed.includes(idx)) {
+                state.daily.workout.completed.push(idx);
+                changed = true;
+            }
+        });
+    }
+
+    if (changed) {
+        saveDaily();
+        Storage.save('fls_user', state.user);
+        Storage.save('fls_history', state.history);
+        render();
+        if (state.activeTab === 'progress') renderChart();
+        console.log("Cloud Synchronization Complete: Application State Updated.");
+    }
+}
+
+// --- Rendering ---
+function render() {
+    const todayBurn = calculateBurn();
+    const todayIntake = state.daily.meals.reduce((sum, m) => sum + m.cals, 0);
+
+    // Dashboard
+    document.getElementById('burned-calories').textContent = Math.round(todayBurn);
+    document.getElementById('target-burn').textContent = state.user.burnGoal;
+    const burnPct = Math.min(100, (todayBurn / state.user.burnGoal) * 100);
+    document.getElementById('burn-progress').style.width = `${burnPct}%`;
+    document.getElementById('burn-remaining').textContent = todayBurn >= state.user.burnGoal ? "Goal Reached! 🔥" : `${Math.round(state.user.burnGoal - todayBurn)} kcal remaining`;
+    
+    // Insight Logic
+    let insight = HEALTH_MESSAGES.WELCOME;
+    if (todayIntake > state.user.calorieLimit) insight = HEALTH_MESSAGES.SURPLUS;
+    else if (todayIntake < state.user.calorieLimit && todayIntake > 0) insight = HEALTH_MESSAGES.DEFICIT;
+    else if (state.streak.count > 2) insight = HEALTH_MESSAGES.STREAK;
+    document.getElementById('daily-insight').textContent = insight;
+
+    // Workout List
+    const workoutList = document.getElementById('workout-list');
+    workoutList.innerHTML = '';
+    state.daily.workout.exercises.forEach((ex, idx) => {
+        const isDone = state.daily.workout.completed.includes(idx);
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+            <div class="item-info">
+                <span class="item-name">${ex.name}</span>
+                <span class="item-meta">${ex.reps} ${ex.unit} • ${Math.round(ex.cals * ex.reps * state.daily.workout.rounds)} kcal</span>
+            </div>
+            <div class="check-circle ${isDone ? 'checked' : ''}" onclick="toggleExercise(${idx})"></div>
         `;
-        container.appendChild(item);
+        workoutList.appendChild(row);
+    });
+    document.getElementById('workout-rounds').textContent = `${state.daily.workout.rounds} ROUND${state.daily.workout.rounds > 1 ? 'S' : ''} ONLY`;
+
+    // Intake View
+    document.getElementById('intake-status').textContent = `${todayIntake} / ${state.user.calorieLimit} kcal`;
+    const intakePct = (todayIntake / state.user.calorieLimit) * 100;
+    const iFill = document.getElementById('intake-progress');
+    iFill.style.width = `${Math.min(100, intakePct)}%`;
+    iFill.className = 'progress-fill';
+    if (intakePct > 100) iFill.classList.add('danger');
+    else if (intakePct > 80) iFill.classList.add('warning');
+    else iFill.classList.add('success');
+
+    const mealList = document.getElementById('intake-list');
+    mealList.innerHTML = '';
+    state.daily.meals.forEach(meal => {
+        const mRow = document.createElement('div');
+        mRow.className = 'item-row';
+        mRow.innerHTML = `
+            <div class="item-info">
+                <span class="item-name">${meal.name}</span>
+                <span class="item-meta">${meal.cals} kcal</span>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <span class="action-icon edit-icon" data-id="${meal.id}">✏️</span>
+                <span class="action-icon delete-icon" data-id="${meal.id}">🗑️</span>
+            </div>
+        `;
+        mealList.appendChild(mRow);
+    });
+
+    // Attach listeners to icons
+    document.querySelectorAll('.edit-icon').forEach(el => {
+        el.onclick = () => editMeal(el.dataset.id);
+    });
+    document.querySelectorAll('.delete-icon').forEach(el => {
+        el.onclick = () => deleteMeal(el.dataset.id);
+    });
+
+    // Progress View
+    const last7 = state.history.slice(-7);
+    if (last7.length > 1) {
+        const diff = (last7[last7.length - 1].weight - last7[0].weight).toFixed(1);
+        const status = diff <= 0 ? 'lost' : 'gained';
+        document.getElementById('weight-trend-text').innerHTML = `You ${status} <b>${Math.abs(diff)} kg</b> this week.`;
     }
+
+    // Streak
+    document.getElementById('streak-count').textContent = state.streak.count;
 }
 
-function updateGoalUI() {
-    const currentWeight = state.weightLogs.length > 0 ? state.weightLogs[state.weightLogs.length - 1].weight : 77;
-    const toGo = (currentWeight - state.goalWeight).toFixed(1);
-    const goalEl = document.getElementById('weight-to-go');
-    if (goalEl) goalEl.textContent = toGo > 0 ? `${toGo} kg to goal` : 'Goal reached! 🏆';
-
-    const daysLeft = Math.ceil((new Date(state.goalDate) - new Date()) / (1000 * 60 * 60 * 24));
-    const daysEl = document.getElementById('days-remaining');
-    if (daysEl) daysEl.textContent = daysLeft > 0 ? `${daysLeft} days left` : 'Target date passed';
-
-    // Update Daily Target UI
-    const targetEl = document.getElementById('target-burn-value');
-    if (targetEl) targetEl.textContent = state.dailyTargetBurn;
-
-    const remainingEl = document.getElementById('target-remaining');
-    if (remainingEl) {
-        const remaining = Math.max(0, state.dailyTargetBurn - state.totalCaloriesBurned);
-        remainingEl.textContent = `${Math.round(remaining)} kcal remaining today`;
-    }
-}
-
-function updateCals() {
-    state.totalCaloriesBurned = state.completedExercises.reduce((acc, idx) => {
-        const ex = state.todayWorkout[idx];
-        // Now cals are per round, so we multiply by rounds
-        return acc + (ex ? (ex.cals * ex.reps * state.totalRounds) : 0);
+function calculateBurn() {
+    return state.daily.workout.completed.reduce((acc, idx) => {
+        const ex = state.daily.workout.exercises[idx];
+        return acc + (ex.cals * ex.reps * state.daily.workout.rounds);
     }, 0);
 }
 
-function calculateStreak() {
-    const history = state.workoutHistory.map(w => w.date);
-    let currentStreak = 0;
-    let checkDate = new Date();
-    
-    while (true) {
-        const dateStr = checkDate.toDateString();
-        if (history.includes(dateStr)) {
-            currentStreak++;
-            checkDate.setDate(checkDate.getDate() - 1);
-        } else {
-            // If it's today and not yet completed, but yesterday was, keep streak
-            if (dateStr === new Date().toDateString()) {
-                checkDate.setDate(checkDate.getDate() - 1);
-                continue;
-            }
-            break;
-        }
-    }
-    state.streak = currentStreak;
-    document.getElementById('streak-count').textContent = state.streak;
-}
-
-// --- UI Rendering ---
 function updateDateDisplay() {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
     document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', options).toUpperCase();
 }
 
-function renderHome() {
-    const list = document.getElementById('exercise-list');
-    list.innerHTML = '';
-    
-    state.todayWorkout.forEach((ex, index) => {
-        const isDone = state.completedExercises.includes(index);
-        const item = document.createElement('div');
-        item.className = 'exercise-item';
-        item.innerHTML = `
-            <div class="exercise-info">
-                <div class="exercise-name">${ex.name}</div>
-                <div class="exercise-meta">${ex.reps} ${ex.isTimed ? 'Seconds' : 'Reps'} x ${state.totalRounds} Rounds • ~${Math.round(ex.cals * ex.reps * state.totalRounds)} kcal</div>
-            </div>
-            <button class="check-btn ${isDone ? 'completed' : ''}" onclick="toggleExercise(${index})">
-                ${isDone ? '✓' : ''}
-            </button>
-        `;
-        list.appendChild(item);
-    });
-
-    renderHealthTip();
-    updateProgressUI();
-}
-
-function renderHealthTip() {
-    const tipContainer = document.getElementById('health-tip-container');
-    if (!tipContainer) return;
-
-    if (state.intensityMode === 'recovery' || state.completedExercises.length === 0) {
-        const randomTip = HEALTH_TIPS[Math.floor(Math.random() * HEALTH_TIPS.length)];
-        tipContainer.innerHTML = `
-            <div class="card health-tip-card">
-                <div class="subtitle">💡 RECOVERY ADVICE</div>
-                <p style="font-size: 15px; color: var(--text-main); margin-top: 8px;">${randomTip}</p>
-                ${state.intensityMode === 'recovery' ? '<small style="color: var(--accent-orange); display: block; margin-top: 10px; font-weight: 600;">You are in Recovery Mode. Focus on form, not speed.</small>' : ''}
-            </div>
-        `;
-        tipContainer.classList.remove('hidden');
-    } else {
-        tipContainer.classList.add('hidden');
-    }
-}
-
-function updateProgressUI() {
-    const progress = (state.completedExercises.length / state.todayWorkout.length) * 100;
-    document.getElementById('workout-progress').style.width = `${progress}%`;
-    
-    const roundsText = state.totalRounds > 1 ? `${state.totalRounds} Rounds of Circuit • ` : '';
-    document.getElementById('workout-summary-text').textContent = `${roundsText}${state.completedExercises.length} of ${state.todayWorkout.length} exercises tracked`;
-    document.getElementById('total-cals').textContent = Math.round(state.totalCaloriesBurned);
-}
-
-function toggleExercise(index) {
-    if (state.completedExercises.includes(index)) {
-        state.completedExercises = state.completedExercises.filter(i => i !== index);
-    } else {
-        state.completedExercises.push(index);
-        speak(`${state.todayWorkout[index].name} completed.`);
-    }
-    updateCals();
-    saveProgress();
-    renderHome();
-}
-
-// --- Guided Workout Controls ---
-function startWorkout() {
-    if (state.completedExercises.length === state.todayWorkout.length) {
-        alert("Workout already completed for today!");
-        return;
-    }
-    state.isWorkoutActive = true;
-    state.currentExerciseIndex = 0;
-    state.currentRound = 1;
-    // Skip already completed ones
-    while (state.completedExercises.includes(state.currentExerciseIndex)) {
-        state.currentExerciseIndex++;
-    }
-    showExercise();
-    document.getElementById('workout-overlay').style.display = 'flex';
-}
-
-function showExercise() {
-    const ex = state.todayWorkout[state.currentExerciseIndex];
-    if (!ex) {
-        finishWorkout();
-        return;
-    }
-
-    const stepText = state.totalRounds > 1 ? `ROUND ${state.currentRound} OF ${state.totalRounds} • ` : '';
-    document.getElementById('overlay-step').textContent = `${stepText}EXERCISE ${state.currentExerciseIndex + 1}`;
-    document.getElementById('overlay-title').textContent = ex.name;
-    
-    const countPrefix = state.totalRounds > 1 ? `Round ${state.currentRound}: ` : '';
-    document.getElementById('overlay-count').textContent = ex.isTimed ? `${countPrefix}Go!` : `${countPrefix}${ex.reps} Reps`;
-    
-    // Disable prev if first
-    document.getElementById('prev-btn').disabled = state.currentExerciseIndex === 0;
-    document.getElementById('workout-overlay').classList.remove('resting');
-    document.getElementById('skip-rest-btn').style.display = 'none';
-    document.getElementById('next-btn').style.display = 'block';
-
-    speak(`Next: ${ex.name}. ${ex.reps} ${ex.isTimed ? 'seconds' : 'reps'}.`);
-
-    let timeLeft = ex.isTimed ? ex.reps : 15;
-    startTimer(timeLeft);
-}
-
-function startTimer(seconds) {
-    if (state.workoutInterval) clearInterval(state.workoutInterval);
-    
-    const timerEl = document.getElementById('overlay-timer');
-    let timeLeft = seconds;
-    timerEl.textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
-
-    state.workoutInterval = setInterval(() => {
-        if (!state.isWorkoutActive) {
-            clearInterval(state.workoutInterval);
-            return;
-        }
-        timeLeft--;
-        timerEl.textContent = `00:${Math.max(0, timeLeft).toString().padStart(2, '0')}`;
-        
-        // Voice Milestones
-        if (timeLeft === 10) speak("10 seconds left");
-        if (timeLeft === Math.floor(seconds / 2) && seconds > 20) speak("Halfway there");
-        if (timeLeft <= 5 && timeLeft > 0) speak(timeLeft.toString());
-
-        if (timeLeft <= 0) {
-            clearInterval(state.workoutInterval);
-            speak("Time up!");
-            if (state.isResting) {
-                state.isResting = false;
-                showExercise();
-            }
-        }
-    }, 1000);
-}
-
-function nextExercise() {
-    state.currentExerciseIndex++;
-    
-    if (state.currentExerciseIndex >= state.todayWorkout.length) {
-        // Circuit finished
-        for (let i = 0; i < state.todayWorkout.length; i++) {
-            if (!state.completedExercises.includes(i)) {
-                state.completedExercises.push(i);
-            }
-        }
-        
-        if (state.currentRound < state.totalRounds) {
-            state.currentRound++;
-            state.currentExerciseIndex = 0;
-            speak(`Round ${state.currentRound} starts now!`);
-            startRest(); // Rest between rounds
-        } else {
-            finishWorkout();
-        }
-    } else {
-        startRest(); // Rest between exercises
-    }
-    
-    updateCals();
-    saveProgress();
-}
-
-function startRest() {
-    state.isResting = true;
-    const nextEx = state.todayWorkout[state.currentExerciseIndex];
-    
-    document.getElementById('workout-overlay').classList.add('resting');
-    document.getElementById('overlay-title').textContent = "REST";
-    document.getElementById('overlay-step').textContent = `UP NEXT: ${nextEx.name}`;
-    document.getElementById('overlay-count').textContent = `Prepare for ${nextEx.reps} ${nextEx.isTimed ? 'Seconds' : 'Reps'}`;
-    
-    document.getElementById('skip-rest-btn').style.display = 'block';
-    document.getElementById('next-btn').style.display = 'none';
-
-    speak(`Rest for ${REST_DURATION} seconds. Next exercise is ${nextEx.name}.`);
-    startTimer(REST_DURATION);
-}
-
-function prevExercise() {
-    if (state.currentExerciseIndex > 0) {
-        state.currentExerciseIndex--;
-        showExercise();
-    }
-}
-
-function saveProgress() {
-    const dateKey = new Date().toDateString();
-    const existingIdx = state.workoutHistory.findIndex(w => w.date === dateKey);
-    if (existingIdx >= 0) {
-        state.workoutHistory[existingIdx].exercises = [...state.completedExercises];
-    } else {
-        state.workoutHistory.push({ date: dateKey, exercises: [...state.completedExercises] });
-    }
-    localStorage.setItem('workoutHistory', JSON.stringify(state.workoutHistory));
-    renderHome();
-}
-
-function finishWorkout() {
-    state.isWorkoutActive = false;
-    document.getElementById('workout-overlay').style.display = 'none';
-    speak("Workout complete! Great job today.");
-    calculateStreak();
-    renderHome();
-}
-
-function speak(text) {
-    if (!state.voiceEnabled || !window.speechSynthesis) return;
-    
-    // Add a slight delay if queueing to avoid stutter
-    const msg = new SpeechSynthesisUtterance(text);
-    msg.rate = 1.05;
-    
-    const btn = document.getElementById('voice-toggle');
-    if (btn) btn.classList.add('speaking');
-    
-    msg.onend = () => {
-        if (btn) btn.classList.remove('speaking');
-    };
-
-    window.speechSynthesis.speak(msg);
-}
-
-function toggleVoice() {
-    state.voiceEnabled = !state.voiceEnabled;
-    localStorage.setItem('voiceEnabled', state.voiceEnabled);
-    updateVoiceUI();
-    
-    if (state.voiceEnabled) {
-        speak("Voice enabled");
-    } else {
-        window.speechSynthesis.cancel();
-    }
-}
-
-function updateVoiceUI() {
-    const btn = document.getElementById('voice-toggle');
-    if (!btn) return;
-    
-    btn.classList.toggle('muted', !state.voiceEnabled);
-    btn.innerHTML = state.voiceEnabled ? '<span class="icon">🔊</span>' : '<span class="icon">🔇</span>';
-}
-
-// --- Weight Tracker Logic ---
-let weightChart = null;
-function renderWeightChart() {
-    const ctx = document.getElementById('weightChart').getContext('2d');
-    const data = state.weightLogs.slice(-7);
+function renderChart() {
+    const canvas = document.getElementById('weightChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const last7 = state.history.slice(-7);
     
     if (weightChart) weightChart.destroy();
-
+    
     weightChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: data.map(l => new Date(l.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+            labels: last7.map(h => h.date.split('-').slice(1).join('/')),
             datasets: [{
-                label: 'Weight (kg)',
-                data: data.map(l => l.weight),
-                borderColor: '#30D158',
-                backgroundColor: 'rgba(48, 209, 88, 0.2)',
-                fill: true,
-                tension: 0.4,
+                label: 'Weight',
+                data: last7.map(h => h.weight),
+                borderColor: '#0A84FF',
+                backgroundColor: 'rgba(10, 132, 255, 0.1)',
                 borderWidth: 3,
+                tension: 0.4,
+                fill: true,
                 pointRadius: 4,
-                pointBackgroundColor: '#30D158'
+                pointBackgroundColor: '#0A84FF'
             }]
         },
         options: {
@@ -617,164 +498,11 @@ function renderWeightChart() {
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8E8E93' } },
-                x: { grid: { display: false }, ticks: { color: '#8E8E93' } }
+                y: { grid: { display: false }, ticks: { color: '#8E8E93', font: { size: 10 } } },
+                x: { grid: { display: false }, ticks: { color: '#8E8E93', font: { size: 10 } } }
             }
         }
     });
-
-    renderWeightHistory();
-}
-
-function renderWeightHistory() {
-    const list = document.getElementById('weight-history-list');
-    list.innerHTML = state.weightLogs.slice().reverse().map(log => `
-        <div class="exercise-item">
-            <div class="exercise-info">
-                <div class="exercise-name">${log.weight} kg</div>
-                <div class="exercise-meta">${new Date(log.date).toLocaleDateString()}</div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function saveWeight() {
-    const val = document.getElementById('weight-input').value;
-    if (!val) return;
-    
-    const weight = parseFloat(val);
-    state.weightLogs.push({ date: new Date().toISOString(), weight: weight });
-    localStorage.setItem('weightLogs', JSON.stringify(state.weightLogs));
-    document.getElementById('weight-input').value = '';
-    
-    updateGoalUI();
-    renderWeightChart();
-}
-
-function saveGoal() {
-    const weight = document.getElementById('target-weight-input').value;
-    const date = document.getElementById('target-date-input').value;
-    
-    if (weight) {
-        state.goalWeight = parseFloat(weight);
-        localStorage.setItem('goalWeight', state.goalWeight);
-    }
-    if (date) {
-        state.goalDate = new Date(date).toISOString();
-        localStorage.setItem('goalDate', state.goalDate);
-    }
-    
-    calculateTargetBurn();
-    generateDailyWorkout();
-    renderHome();
-    alert("Goal updated!");
-}
-
-function saveProfile() {
-    const height = document.getElementById('profile-height-input').value;
-    const age = document.getElementById('profile-age-input').value;
-    
-    if (height) {
-        state.height = parseFloat(height);
-        localStorage.setItem('height', state.height);
-    }
-    if (age) {
-        state.age = parseInt(age);
-        localStorage.setItem('age', state.age);
-    }
-    
-    updateBMI();
-    generateDailyWorkout();
-    renderHome();
-    alert("Profile updated!");
-}
-
-function toggleIntensity(mode) {
-    state.intensityMode = mode;
-    localStorage.setItem('intensityMode', mode);
-    
-    calculateTargetBurn(); // Ensure target is updated for the mode
-    updateToggleButtons();
-    generateDailyWorkout();
-    renderHome();
-}
-
-// --- Event Listeners ---
-function setupEventListeners() {
-    document.getElementById('start-workout-btn').addEventListener('click', startWorkout);
-    document.getElementById('stop-workout-btn').addEventListener('click', () => {
-        state.isWorkoutActive = false;
-        if (state.workoutInterval) clearInterval(state.workoutInterval);
-        document.getElementById('workout-overlay').style.display = 'none';
-    });
-
-    document.getElementById('next-btn').addEventListener('click', nextExercise);
-    document.getElementById('prev-btn').addEventListener('click', prevExercise);
-
-    document.getElementById('save-weight-btn').addEventListener('click', saveWeight);
-    document.getElementById('save-goal-btn').addEventListener('click', saveGoal);
-    document.getElementById('save-profile-btn').addEventListener('click', saveProfile);
-
-    document.getElementById('toggle-recovery').addEventListener('click', () => toggleIntensity('recovery'));
-    document.getElementById('toggle-standard').addEventListener('click', () => toggleIntensity('standard'));
-    document.getElementById('toggle-intense').addEventListener('click', () => toggleIntensity('intense'));
-    
-    const fatBurnToggle = document.getElementById('toggle-fatburn-500');
-    if (fatBurnToggle) fatBurnToggle.addEventListener('click', () => toggleIntensity('fatburn_500'));
-
-    const navHome = document.getElementById('nav-home');
-    const navWeight = document.getElementById('nav-weight');
-
-    if (navHome) {
-        navHome.addEventListener('click', () => {
-            document.getElementById('home-view').classList.remove('hidden');
-            document.getElementById('weight-view').classList.add('hidden');
-            navHome.classList.add('active');
-            if (navWeight) navWeight.classList.remove('active');
-        });
-    }
-
-    if (navWeight) {
-        navWeight.addEventListener('click', () => {
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('weight-view').classList.remove('hidden');
-            if (navHome) navHome.classList.remove('active');
-            navWeight.classList.add('active');
-            setTimeout(renderWeightChart, 100);
-        });
-    }
-
-    const viewScheduleBtn = document.getElementById('view-schedule-btn');
-    if (viewScheduleBtn) viewScheduleBtn.addEventListener('click', toggleSchedule);
-    
-    const closeScheduleBtn = document.getElementById('close-schedule-btn');
-    if (closeScheduleBtn) closeScheduleBtn.addEventListener('click', toggleSchedule);
-
-    const voiceToggleBtn = document.getElementById('voice-toggle');
-    if (voiceToggleBtn) voiceToggleBtn.addEventListener('click', toggleVoice);
-
-    const skipRestBtn = document.getElementById('skip-rest-btn');
-    if (skipRestBtn) {
-        skipRestBtn.addEventListener('click', () => {
-            state.isResting = false;
-            if (state.workoutInterval) clearInterval(state.workoutInterval);
-            showExercise();
-        });
-    }
-
-    const viewReferenceBtn = document.getElementById('view-reference-btn');
-    if (viewReferenceBtn) {
-        viewReferenceBtn.addEventListener('click', () => {
-            document.getElementById('reference-overlay').style.display = 'flex';
-        });
-    }
-
-    const closeReferenceBtn = document.getElementById('close-reference-btn');
-    if (closeReferenceBtn) {
-        closeReferenceBtn.addEventListener('click', () => {
-            document.getElementById('reference-overlay').style.display = 'none';
-        });
-    }
 }
 
 // --- Init ---

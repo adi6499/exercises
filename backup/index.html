@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fitness Pro | Premium Daily Workouts</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="animate-fade">
+        <div>
+            <div class="subtitle" id="current-date">FRIDAY, APRIL 17</div>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <h1 style="margin-right: 5px;">Fitness Pro</h1>
+                <span class="focus-badge" id="daily-focus">LOADING...</span>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button id="voice-toggle" class="voice-btn" title="Toggle Voice">
+                <span class="icon">🔊</span>
+            </button>
+            <div class="streak-badge">
+                ⚡ <span id="streak-count">0</span> Day Streak
+            </div>
+        </div>
+    </header>
+
+    <!-- Workout Summary Card -->
+    <section id="home-view" class="animate-fade">
+        <div class="card">
+            <div class="subtitle">DAILY BURN GOAL</div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: baseline; gap: 8px;">
+                    <h1 id="total-cals">0</h1>
+                    <span style="color: var(--text-secondary); font-weight: 600;"> / <span id="target-burn-value">--</span> KCAL</span>
+                </div>
+                <span id="target-remaining" style="font-size: 13px; color: var(--accent-orange); font-weight: 700;">-- kcal remaining</span>
+            </div>
+            <div class="progress-bar">
+                <div id="workout-progress" class="progress-fill"></div>
+            </div>
+            <div id="workout-summary-text" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 15px;">
+                0 of 0 exercises completed
+            </div>
+            <div class="goal-stats">
+                <div class="goal-item">
+                    <span id="weight-to-go">-- kg to goal</span>
+                    <small id="days-remaining">-- days left</small>
+                </div>
+            </div>
+        </div>
+
+        <div id="health-tip-container" class="hidden">
+            <!-- Tips injected here -->
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Today's Workout</h2>
+                <div class="intensity-toggle">
+                    <button id="toggle-recovery" class="toggle-btn">Recovery</button>
+                    <button id="toggle-standard" class="toggle-btn active">Standard</button>
+                    <button id="toggle-intense" class="toggle-btn">Fat Burn</button>
+                    <button id="toggle-fatburn-500" class="toggle-btn">500kcal</button>
+                </div>
+            </div>
+            <div id="exercise-list">
+                <!-- Exercises will be injected here -->
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn-primary" id="start-workout-btn">START WORKOUT</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-secondary" id="view-schedule-btn" style="margin-top: 0; padding: 0 15px; display: flex; align-items: center; justify-content: center;">
+                        📅
+                    </button>
+                    <button class="btn-secondary" id="view-reference-btn" style="margin-top: 0; padding: 0 15px; display: flex; align-items: center; justify-content: center;">
+                        📊
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Weight Tracker View -->
+    <section id="weight-view" class="animate-fade hidden">
+        <div class="card">
+            <h2>Track Weight</h2>
+            <div class="tracker-input-group">
+                <input type="number" id="weight-input" placeholder="Enter weight (kg)" step="0.1">
+                <button class="btn-primary" style="margin-top: 0; width: auto; padding: 0 20px;" id="save-weight-btn">Log</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="weightChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Personal Profile</h2>
+            <div class="settings-group">
+                <div style="display: flex; gap: 10px;">
+                    <div class="input-item" style="flex: 1;">
+                        <label>Height (cm)</label>
+                        <input type="number" id="profile-height-input" placeholder="171">
+                    </div>
+                    <div class="input-item" style="flex: 1;">
+                        <label>Age</label>
+                        <input type="number" id="profile-age-input" placeholder="27">
+                    </div>
+                </div>
+                <div class="bmi-badge-container">
+                    <div class="bmi-stat">
+                        <small>Current BMI</small>
+                        <span id="bmi-value">--</span>
+                    </div>
+                    <div class="bmi-stat">
+                        <small>Category</small>
+                        <span id="bmi-category">--</span>
+                    </div>
+                </div>
+                <button class="btn-primary" id="save-profile-btn" style="background: var(--bg-card); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">Save Profile</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Goal Settings</h2>
+            <div class="settings-group">
+                <div class="input-item">
+                    <label>Target Weight (kg)</label>
+                    <input type="number" id="target-weight-input" placeholder="72" step="0.1">
+                </div>
+                <div class="input-item">
+                    <label>Target Date</label>
+                    <input type="date" id="target-date-input">
+                </div>
+                <button class="btn-primary" id="save-goal-btn">Update Goal</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>History</h2>
+            <div id="weight-history-list" style="max-height: 200px; overflow-y: auto;">
+                <!-- History items injected here -->
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Schedule Overlay -->
+<div id="schedule-overlay" class="animate-fade" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-black); z-index: 1100; display: none; flex-direction: column; padding: 40px 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>Weekly Schedule</h2>
+        <button id="close-schedule-btn" style="background: transparent; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer;">✕</button>
+    </div>
+    
+    <div id="schedule-list" style="display: flex; flex-direction: column; gap: 15px;">
+        <!-- Days will be injected here -->
+    </div>
+    
+    <div class="card" style="margin-top: auto; border-left: 4px solid var(--accent-orange);">
+        <div class="subtitle">🎯 THE GOAL</div>
+        <p style="font-size: 15px; margin-top: 10px;">Every day target is locked to your <b>Daily Burn Goal</b>. Whether you choose Simple or Fat Burn, we adjust the volume to ensure you hit your magic number.</p>
+    </div>
+</div>
+
+<!-- Calorie Reference Overlay -->
+<div id="reference-overlay" class="animate-fade" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-black); z-index: 1100; display: none; flex-direction: column; padding: 40px 20px; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>Calorie Reference</h2>
+        <button id="close-reference-btn" style="background: transparent; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer;">✕</button>
+    </div>
+    
+    <div class="card" style="padding: 0; overflow: hidden;">
+        <table class="ref-table">
+            <thead>
+                <tr>
+                    <th>Exercise</th>
+                    <th>Cal/Min (70kg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Burpees</td><td>12-15</td></tr>
+                <tr><td>Jumping Jacks</td><td>8-12</td></tr>
+                <tr><td>Mountain Climbers</td><td>10-14</td></tr>
+                <tr><td>High Knees</td><td>8-12</td></tr>
+                <tr><td>Squat Jumps</td><td>10-13</td></tr>
+                <tr><td>Push-ups</td><td>7-10</td></tr>
+                <tr><td>Plank Hold</td><td>5-8</td></tr>
+                <tr><td>Lunges</td><td>6-9</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="card" style="margin-top: 20px; border-left: 4px solid var(--accent-orange);">
+        <div class="subtitle">💡 PRO TIP</div>
+        <p style="font-size: 15px; margin-top: 10px;">Our <b>500kcal Challenge</b> uses a 5-round circuit training system. We scale the reps per round so you hit exactly 500kcal without burning out on a single set.</p>
+    </div>
+</div>
+
+<!-- Guided Workout Overlay -->
+<div id="workout-overlay">
+    <div class="subtitle" id="overlay-step">EXERCISE 1 OF 6</div>
+    <h2 id="overlay-title" style="font-size: 32px; margin-top: 10px;">Jumping Jacks</h2>
+    
+    <div class="instruction-card">
+        <div class="timer-display" id="overlay-timer" style="margin: 0 0 20px 0;">00:30</div>
+        <div class="instruction-text" id="overlay-count">25 Reps</div>
+    </div>
+    
+    <div class="workout-controls">
+        <button class="btn-secondary" id="prev-btn">PREVIOUS</button>
+        <button class="btn-primary" id="skip-rest-btn" style="display: none; background: var(--bg-card); color: var(--accent-blue); border-color: var(--accent-blue);">SKIP REST</button>
+        <button class="btn-primary" id="next-btn" style="margin-top: 0;">NEXT</button>
+    </div>
+
+    <div style="width: 100%;">
+        <button class="btn-primary" id="stop-workout-btn" style="background: var(--bg-dark); color: var(--accent-red); box-shadow: none;">EXIT WORKOUT</button>
+    </div>
+</div>
+
+<!-- Navigation -->
+<nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home">
+        <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+    </div>
+    <div class="nav-item" id="nav-weight">
+        <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6V6h12v13zM9 9h6v2H9V9zm0 4h6v2H9v-2z"/></svg>
+        <span>Weight</span>
+    </div>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
