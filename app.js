@@ -162,35 +162,44 @@ function generateDailyWorkout() {
         modePool = EXERCISES_POOL.filter(ex => ex.difficulty === 'high');
     }
 
-    // Filter by target for the day
-    let filteredPool = modePool.filter(ex => ex.target === schedule.target);
-    
-    // Fallback if target pool is too small
-    if (filteredPool.length < 4) {
-        filteredPool = [...modePool];
+    // Handle 500kcal mode with fixed 8 exercises from screenshot
+    let selected = [];
+    if (state.intensityMode === 'fatburn_500') {
+        const names = ["Burpees", "Jumping Jacks", "Mountain Climbers", "High Knees", "Jump Squats", "Push Ups", "Plank", "Lunges"];
+        selected = names.map(name => EXERCISES_POOL.find(ex => ex.name === name)).filter(Boolean);
+        state.totalRounds = 1; // Single round as per user request
+    } else {
+        // Filter by target for the day
+        let filteredPool = modePool.filter(ex => ex.target === schedule.target);
+        
+        // Fallback if target pool is too small
+        if (filteredPool.length < 4) {
+            filteredPool = [...modePool];
+        }
+
+        // Better Shuffling
+        const shuffled = [...filteredPool].sort((a, b) => {
+            const sumChars = (str) => str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            const valA = (sumChars(a.name) * seed) % 137;
+            const valB = (sumChars(b.name) * seed) % 137;
+            return valA - valB;
+        });
+
+        const exerciseCount = 10;
+        selected = shuffled.slice(0, exerciseCount);
     }
-
-    // Better Shuffling: Use a more complex seed for variety
-    const shuffled = [...filteredPool].sort((a, b) => {
-        // combine name length, name sum and seed for more uniqueness
-        const sumChars = (str) => str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const valA = (sumChars(a.name) * seed) % 137;
-        const valB = (sumChars(b.name) * seed) % 137;
-        return valA - valB;
-    });
-
-    // Increase variety: use 10 exercises to ensure a ~30 min total workout
-    const exerciseCount = 10;
-    let selected = shuffled.slice(0, exerciseCount);
     
     // CIRCUIT TRAINING LOGIC
     // 1. Calculate burn of one round with "Standard" manageable reps
     let oneRoundBurn = selected.reduce((acc, ex) => acc + (ex.cals * ex.reps), 0);
     
     // 2. Determine how many rounds are needed to hit the daily target
-    // We want 1-4 rounds to keep it functional, maybe more for fatburn_500
-    const maxRounds = state.intensityMode === 'fatburn_500' ? 8 : 4;
-    state.totalRounds = Math.min(maxRounds, Math.max(1, Math.ceil(state.dailyTargetBurn / oneRoundBurn)));
+    if (state.intensityMode === 'fatburn_500') {
+        state.totalRounds = 1;
+    } else {
+        const maxRounds = 4;
+        state.totalRounds = Math.min(maxRounds, Math.max(1, Math.ceil(state.dailyTargetBurn / oneRoundBurn)));
+    }
     
     // 3. Optional: slightly scale reps if rounds are too few or too many
     // This keeps reps in a comfortable range
@@ -349,7 +358,9 @@ function renderHealthTip() {
 function updateProgressUI() {
     const progress = (state.completedExercises.length / state.todayWorkout.length) * 100;
     document.getElementById('workout-progress').style.width = `${progress}%`;
-    document.getElementById('workout-summary-text').textContent = `${state.totalRounds} Rounds Planned • ${state.completedExercises.length} of ${state.todayWorkout.length} exercises completed`;
+    
+    const roundsText = state.totalRounds > 1 ? `${state.totalRounds} Rounds Planned • ` : '';
+    document.getElementById('workout-summary-text').textContent = `${roundsText}${state.completedExercises.length} of ${state.todayWorkout.length} exercises completed`;
     document.getElementById('total-cals').textContent = Math.round(state.totalCaloriesBurned);
 }
 
@@ -389,9 +400,12 @@ function showExercise() {
         return;
     }
 
-    document.getElementById('overlay-step').textContent = `ROUND ${state.currentRound} OF ${state.totalRounds} • EXERCISE ${state.currentExerciseIndex + 1}`;
+    const stepText = state.totalRounds > 1 ? `ROUND ${state.currentRound} OF ${state.totalRounds} • ` : '';
+    document.getElementById('overlay-step').textContent = `${stepText}EXERCISE ${state.currentExerciseIndex + 1}`;
     document.getElementById('overlay-title').textContent = ex.name;
-    document.getElementById('overlay-count').textContent = ex.isTimed ? `Round ${state.currentRound}: Go!` : `Round ${state.currentRound}: ${ex.reps} Reps`;
+    
+    const countPrefix = state.totalRounds > 1 ? `Round ${state.currentRound}: ` : '';
+    document.getElementById('overlay-count').textContent = ex.isTimed ? `${countPrefix}Go!` : `${countPrefix}${ex.reps} Reps`;
     
     // Disable prev if first
     document.getElementById('prev-btn').disabled = state.currentExerciseIndex === 0;
