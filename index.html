@@ -101,6 +101,33 @@
         </div>
 
         <div class="card">
+            <h2>Personal Profile</h2>
+            <div class="settings-group">
+                <div style="display: flex; gap: 10px;">
+                    <div class="input-item" style="flex: 1;">
+                        <label>Height (cm)</label>
+                        <input type="number" id="profile-height-input" placeholder="171">
+                    </div>
+                    <div class="input-item" style="flex: 1;">
+                        <label>Age</label>
+                        <input type="number" id="profile-age-input" placeholder="27">
+                    </div>
+                </div>
+                <div class="bmi-badge-container">
+                    <div class="bmi-stat">
+                        <small>Current BMI</small>
+                        <span id="bmi-value">--</span>
+                    </div>
+                    <div class="bmi-stat">
+                        <small>Category</small>
+                        <span id="bmi-category">--</span>
+                    </div>
+                </div>
+                <button class="btn-primary" id="save-profile-btn" style="background: var(--bg-card); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">Save Profile</button>
+            </div>
+        </div>
+
+        <div class="card">
             <h2>Goal Settings</h2>
             <div class="settings-group">
                 <div class="input-item">

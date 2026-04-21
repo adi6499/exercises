@@ -376,6 +376,35 @@ input[type="number"] {
     gap: 15px;
 }
 
+.bmi-badge-container {
+    display: flex;
+    justify-content: space-around;
+    background: var(--bg-black);
+    padding: 12px;
+    border-radius: 12px;
+    margin: 10px 0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bmi-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bmi-stat small {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.bmi-stat span {
+    font-size: 18px;
+    font-weight: 800;
+}
+
 .input-item {
     display: flex;
     flex-direction: column;

@@ -71,6 +71,8 @@ let state = {
     intensityMode: localStorage.getItem('intensityMode') || 'standard',
     goalWeight: parseFloat(localStorage.getItem('goalWeight')) || 72,
     goalDate: localStorage.getItem('goalDate') || new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+    height: parseFloat(localStorage.getItem('height')) || 171,
+    age: parseInt(localStorage.getItem('age')) || 27,
     dailyTargetBurn: 0,
     totalRounds: 1,
     currentRound: 1,
@@ -97,12 +99,38 @@ function init() {
     // Set initial values for goal inputs
     const targetWeightInput = document.getElementById('target-weight-input');
     const targetDateInput = document.getElementById('target-date-input');
+    const heightInput = document.getElementById('profile-height-input');
+    const ageInput = document.getElementById('profile-age-input');
+
     if (targetWeightInput) targetWeightInput.value = state.goalWeight;
     if (targetDateInput) targetDateInput.value = new Date(state.goalDate).toISOString().split('T')[0];
+    if (heightInput) heightInput.value = state.height;
+    if (ageInput) ageInput.value = state.age;
     
     // Set initial intensity toggle state
     updateToggleButtons();
     updateVoiceUI();
+    updateBMI();
+}
+
+function updateBMI() {
+    const currentWeight = state.weightLogs.length > 0 ? state.weightLogs[state.weightLogs.length - 1].weight : 77;
+    const bmi = currentWeight / ((state.height / 100) ** 2);
+    const bmiEl = document.getElementById('bmi-value');
+    const bmiLabelEl = document.getElementById('bmi-category');
+    
+    if (bmiEl) bmiEl.textContent = bmi.toFixed(1);
+    
+    if (bmiLabelEl) {
+        let label = "Normal";
+        let color = "var(--accent-green)";
+        if (bmi < 18.5) { label = "Underweight"; color = "var(--accent-blue)"; }
+        else if (bmi >= 25 && bmi < 30) { label = "Overweight"; color = "var(--accent-orange)"; }
+        else if (bmi >= 30) { label = "Obese"; color = "var(--accent-red)"; }
+        
+        bmiLabelEl.textContent = label;
+        bmiLabelEl.style.color = color;
+    }
 }
 
 function calculateTargetBurn() {
@@ -127,7 +155,14 @@ function calculateTargetBurn() {
     // 1kg fat ≈ 7700 kcal. Let's assume 40% of deficit comes from exercise.
     const totalCalorieDeficitNeeded = kgToGo * 7700;
     const exerciseDeficitNeeded = totalCalorieDeficitNeeded * 0.4;
-    state.dailyTargetBurn = Math.max(150, Math.min(800, Math.round(exerciseDeficitNeeded / daysLeft)));
+    
+    // Personalization Factor based on Age and BMI
+    const bmi = currentWeight / ((state.height / 100) ** 2);
+    let personalizationMult = 1.0;
+    if (bmi > 25) personalizationMult = 0.9; // Slightly lower intensity for overweight
+    if (state.age > 40) personalizationMult *= 0.85;
+
+    state.dailyTargetBurn = Math.max(150, Math.min(800, Math.round((exerciseDeficitNeeded / daysLeft) * personalizationMult)));
 }
 
 function updateToggleButtons() {
@@ -167,7 +202,7 @@ function generateDailyWorkout() {
     if (state.intensityMode === 'fatburn_500') {
         const names = ["Burpees", "Jumping Jacks", "Mountain Climbers", "High Knees", "Jump Squats", "Push Ups", "Plank", "Lunges"];
         selected = names.map(name => EXERCISES_POOL.find(ex => ex.name === name)).filter(Boolean);
-        state.totalRounds = 5; // Multi-round circuit sounds better
+        state.totalRounds = 3; // Reduced from 5 based on user feedback (manageability)
     } else {
         // Filter by target for the day
         let filteredPool = modePool.filter(ex => ex.target === schedule.target);
@@ -194,7 +229,7 @@ function generateDailyWorkout() {
     let oneRoundBurn = selected.reduce((acc, ex) => acc + (ex.cals * ex.reps), 0);
     
     // 2. Determine how many rounds are needed to hit the daily target
-    const maxRounds = (state.intensityMode === 'fatburn_500') ? 5 : 4;
+    const maxRounds = (state.intensityMode === 'fatburn_500') ? 3 : 4;
     state.totalRounds = Math.min(maxRounds, Math.max(1, Math.ceil(state.dailyTargetBurn / oneRoundBurn)));
     
     // 3. Optional: slightly scale reps if rounds are too few or too many
@@ -635,6 +670,25 @@ function saveGoal() {
     alert("Goal updated!");
 }
 
+function saveProfile() {
+    const height = document.getElementById('profile-height-input').value;
+    const age = document.getElementById('profile-age-input').value;
+    
+    if (height) {
+        state.height = parseFloat(height);
+        localStorage.setItem('height', state.height);
+    }
+    if (age) {
+        state.age = parseInt(age);
+        localStorage.setItem('age', state.age);
+    }
+    
+    updateBMI();
+    generateDailyWorkout();
+    renderHome();
+    alert("Profile updated!");
+}
+
 function toggleIntensity(mode) {
     state.intensityMode = mode;
     localStorage.setItem('intensityMode', mode);
@@ -659,6 +713,7 @@ function setupEventListeners() {
 
     document.getElementById('save-weight-btn').addEventListener('click', saveWeight);
     document.getElementById('save-goal-btn').addEventListener('click', saveGoal);
+    document.getElementById('save-profile-btn').addEventListener('click', saveProfile);
 
     document.getElementById('toggle-recovery').addEventListener('click', () => toggleIntensity('recovery'));
     document.getElementById('toggle-standard').addEventListener('click', () => toggleIntensity('standard'));
