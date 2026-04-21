@@ -167,7 +167,7 @@ function generateDailyWorkout() {
     if (state.intensityMode === 'fatburn_500') {
         const names = ["Burpees", "Jumping Jacks", "Mountain Climbers", "High Knees", "Jump Squats", "Push Ups", "Plank", "Lunges"];
         selected = names.map(name => EXERCISES_POOL.find(ex => ex.name === name)).filter(Boolean);
-        state.totalRounds = 1; // Single round as per user request
+        state.totalRounds = 5; // Multi-round circuit sounds better
     } else {
         // Filter by target for the day
         let filteredPool = modePool.filter(ex => ex.target === schedule.target);
@@ -323,7 +323,7 @@ function renderHome() {
         item.innerHTML = `
             <div class="exercise-info">
                 <div class="exercise-name">${ex.name}</div>
-                <div class="exercise-meta">${ex.reps} ${ex.isTimed ? 'Seconds' : 'Reps'} • ~${Math.round(ex.cals * ex.reps * state.totalRounds)} kcal total</div>
+                <div class="exercise-meta">${ex.reps} ${ex.isTimed ? 'Seconds' : 'Reps'} x ${state.totalRounds} Rounds • ~${Math.round(ex.cals * ex.reps * state.totalRounds)} kcal</div>
             </div>
             <button class="check-btn ${isDone ? 'completed' : ''}" onclick="toggleExercise(${index})">
                 ${isDone ? '✓' : ''}
@@ -359,8 +359,8 @@ function updateProgressUI() {
     const progress = (state.completedExercises.length / state.todayWorkout.length) * 100;
     document.getElementById('workout-progress').style.width = `${progress}%`;
     
-    const roundsText = state.totalRounds > 1 ? `${state.totalRounds} Rounds Planned • ` : '';
-    document.getElementById('workout-summary-text').textContent = `${roundsText}${state.completedExercises.length} of ${state.todayWorkout.length} exercises completed`;
+    const roundsText = state.totalRounds > 1 ? `${state.totalRounds} Rounds of Circuit • ` : '';
+    document.getElementById('workout-summary-text').textContent = `${roundsText}${state.completedExercises.length} of ${state.todayWorkout.length} exercises tracked`;
     document.getElementById('total-cals').textContent = Math.round(state.totalCaloriesBurned);
 }
 
