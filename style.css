@@ -1,0 +1,516 @@
+:root {
+    --bg-black: #000000;
+    --bg-dark: #1C1C1E;
+    --bg-card: #2C2C2E;
+    --accent-green: #30D158;
+    --accent-blue: #0A84FF;
+    --accent-orange: #FF9F0A;
+    --accent-red: #FF453A;
+    --text-main: #FFFFFF;
+    --text-secondary: #8E8E93;
+    --glass: rgba(28, 28, 30, 0.8);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-black);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    padding-bottom: 100px; /* Space for nav */
+    position: relative;
+}
+
+/* Typography */
+h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
+h2 { font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--text-main); }
+.subtitle { font-size: 14px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; }
+
+/* General Card Components */
+.card {
+    background: var(--bg-dark);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.card:active {
+    transform: scale(0.98);
+}
+
+/* Header Section */
+header {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.streak-badge {
+    background: linear-gradient(135deg, var(--accent-orange), #FF3B30);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Weekly Progress Horizontal */
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: var(--bg-card);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-green);
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Exercise List */
+.exercise-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.exercise-item:last-child { border-bottom: none; }
+
+.exercise-img-preview {
+    width: 60px;
+    height: 60px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    margin-right: 16px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.exercise-info { flex: 1; }
+.exercise-name { font-weight: 600; font-size: 17px; }
+.exercise-meta { font-size: 14px; color: var(--text-secondary); }
+
+.check-btn {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.check-btn.completed {
+    background: var(--accent-green);
+    color: black;
+    border-color: var(--accent-green);
+}
+
+/* Primary Button */
+.btn-primary {
+    background: var(--accent-green);
+    color: black;
+    border: none;
+    padding: 16px;
+    border-radius: 16px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(48, 209, 88, 0.3);
+}
+
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(48, 209, 88, 0.4); }
+
+/* Workout Overlay */
+#workout-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-black);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    padding: 40px 20px;
+    align-items: center;
+    text-align: center;
+}
+
+.instruction-card {
+    background: var(--bg-card);
+    width: 100%;
+    max-width: 350px;
+    padding: 40px 20px;
+    border-radius: 30px;
+    margin: 30px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.instruction-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-green);
+    line-height: 1.2;
+}
+
+.workout-controls {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px;
+    border-radius: 16px;
+    flex: 1;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.timer-display {
+    font-size: 64px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    margin: 20px 0;
+    color: var(--accent-green);
+}
+
+/* Tracker Section */
+.tracker-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="number"] {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+.chart-container {
+    height: 200px;
+    margin-top: 20px;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.nav-item.active { color: var(--accent-green); }
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade { animation: fadeIn 0.4s ease forwards; }
+
+.hidden { display: none !important; }
+
+/* Goal Stats */
+.goal-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.goal-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.goal-item span {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+.goal-item small {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Intensity Toggle */
+.intensity-toggle {
+    display: flex;
+    background: var(--bg-card);
+    padding: 4px;
+    border-radius: 12px;
+    gap: 2px;
+}
+
+.toggle-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex: 1;
+    text-align: center;
+}
+
+.toggle-btn.active {
+    background: var(--bg-dark);
+    color: var(--accent-green);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Health Tip Card */
+.health-tip-card {
+    border-left: 4px solid var(--accent-blue);
+    background: linear-gradient(to right, rgba(10, 132, 255, 0.1), var(--bg-dark));
+    margin-bottom: 25px;
+}
+
+.focus-badge {
+    background: var(--bg-card);
+    color: var(--accent-orange);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255, 159, 10, 0.2);
+    display: inline-flex;
+    align-items: center;
+}
+
+
+
+/* Settings Group */
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-item label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.input-item input, .input-item input[type="date"] {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+.schedule-day-item {
+    background: var(--bg-card);
+    padding: 16px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid transparent;
+}
+
+.schedule-day-item.current-day {
+    border-left-color: var(--accent-green);
+    background: linear-gradient(to right, rgba(48, 209, 88, 0.1), var(--bg-card));
+}
+
+
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.5;
+}
+
+/* Voice Toggle Button */
+.voice-btn {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 18px;
+    position: relative;
+    overflow: hidden;
+}
+
+.voice-btn:hover {
+    background: var(--bg-dark);
+    transform: translateY(-2px);
+    border-color: var(--accent-blue);
+}
+
+.voice-btn.muted .icon {
+    opacity: 0.4;
+    filter: grayscale(1);
+}
+
+.voice-btn.muted::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 24px;
+    background: var(--accent-red);
+    transform: rotate(45deg);
+}
+
+.voice-btn.speaking {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 15px rgba(48, 209, 88, 0.4);
+    animation: pulse-voice 1.5s infinite;
+}
+
+@keyframes pulse-voice {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Rest State */
+#workout-overlay.resting {
+    background: radial-gradient(circle at center, #1c2c3e 0%, #000 100%);
+}
+
+#workout-overlay.resting .timer-display,
+#workout-overlay.resting .instruction-text {
+    color: var(--accent-blue);
+}
+
+#workout-overlay.resting .instruction-card {
+    border-color: rgba(10, 132, 255, 0.3);
+}
+
+
+/* Reference Table */
+.ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-main);
+}
+
+.ref-table th, .ref-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ref-table th {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.ref-table tr:last-child td {
+    border-bottom: none;
+}
+
+.ref-table td:nth-child(2) {
+    font-weight: 700;
+    color: var(--accent-orange);
+}
