@@ -194,12 +194,8 @@ function generateDailyWorkout() {
     let oneRoundBurn = selected.reduce((acc, ex) => acc + (ex.cals * ex.reps), 0);
     
     // 2. Determine how many rounds are needed to hit the daily target
-    if (state.intensityMode === 'fatburn_500') {
-        state.totalRounds = 1;
-    } else {
-        const maxRounds = 4;
-        state.totalRounds = Math.min(maxRounds, Math.max(1, Math.ceil(state.dailyTargetBurn / oneRoundBurn)));
-    }
+    const maxRounds = (state.intensityMode === 'fatburn_500') ? 5 : 4;
+    state.totalRounds = Math.min(maxRounds, Math.max(1, Math.ceil(state.dailyTargetBurn / oneRoundBurn)));
     
     // 3. Optional: slightly scale reps if rounds are too few or too many
     // This keeps reps in a comfortable range
