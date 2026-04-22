@@ -52,8 +52,35 @@
             <div id="workout-list">
                 <!-- Injected via JS -->
             </div>
+            <button class="btn btn-primary" id="start-workout-btn" style="margin-top: 15px;">Start Workout</button>
         </div>
     </main>
+
+    <!-- Workout Mode Overlay -->
+    <div id="workout-overlay" class="workout-overlay hidden">
+        <div class="overlay-content">
+            <div class="overlay-header">
+                <div class="subtitle" id="overlay-status">EXERCISE 1 OF 6</div>
+                <button id="close-workout" class="close-btn">&times;</button>
+            </div>
+            
+            <div id="exercise-view" class="active-exercise-card">
+                <h1 id="active-ex-name">Jumping Jacks</h1>
+                <div class="big-reps" id="active-ex-reps">40 REPS</div>
+                <div class="progress-container">
+                    <div id="workout-progress-fill" class="progress-fill" style="width: 15%"></div>
+                </div>
+                <button class="btn btn-primary btn-large" id="complete-ex-btn">Complete & Rest</button>
+            </div>
+
+            <div id="rest-view" class="rest-card hidden">
+                <div class="subtitle">REST PERIOD</div>
+                <div class="timer-display" id="rest-timer">20</div>
+                <div class="subtitle" id="next-ex-preview">NEXT: MOUNTAIN CLIMBERS</div>
+                <button class="btn btn-secondary" id="skip-rest-btn">Skip Rest</button>
+            </div>
+        </div>
+    </div>
 
     <!-- TAB 2: INTAKE -->
     <main id="view-intake" class="view-panel hidden">

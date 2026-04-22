@@ -58,6 +58,14 @@ let state = {
     activeTab: 'dashboard'
 };
 
+let workoutState = {
+    active: false,
+    currentIndex: 0,
+    isResting: false,
+    timer: null,
+    timeLeft: 20
+};
+
 let weightChart = null;
 
 // --- App Logic ---
@@ -131,6 +139,12 @@ function setupEventListeners() {
     document.getElementById('add-meal-btn').addEventListener('click', addMeal);
     document.getElementById('save-weight-btn').addEventListener('click', logWeight);
     document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
+    
+    // Workout Overlay Listeners
+    document.getElementById('start-workout-btn').addEventListener('click', startWorkout);
+    document.getElementById('complete-ex-btn').addEventListener('click', completeEx);
+    document.getElementById('skip-rest-btn').addEventListener('click', skipRest);
+    document.getElementById('close-workout').addEventListener('click', closeWorkout);
 }
 
 function addMeal() {
@@ -197,6 +211,111 @@ function toggleExercise(index) {
             completed: 'TRUE' 
         });
     }
+}
+
+// --- Workout Overlay Logic ---
+function speak(text) {
+    if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.rate = 1.1; // Slightly faster for energy
+        msg.pitch = 1.0;
+        window.speechSynthesis.speak(msg);
+    }
+}
+
+function startWorkout() {
+    workoutState.active = true;
+    workoutState.currentIndex = 0;
+    workoutState.isResting = false;
+    document.getElementById('workout-overlay').classList.remove('hidden');
+    renderWorkoutStep();
+    
+    // Announce first exercise
+    const ex = state.daily.workout.exercises[0];
+    speak(`Starting workout. First exercise: ${ex.name}, ${ex.reps} ${ex.unit}.`);
+}
+
+function renderWorkoutStep() {
+    const ex = state.daily.workout.exercises[workoutState.currentIndex];
+    const total = state.daily.workout.exercises.length;
+    
+    document.getElementById('overlay-status').textContent = `EXERCISE ${workoutState.currentIndex + 1} OF ${total}`;
+    document.getElementById('active-ex-name').textContent = ex.name;
+    document.getElementById('active-ex-reps').textContent = `${ex.reps} ${ex.unit}`;
+    
+    const progress = ((workoutState.currentIndex) / total) * 100;
+    document.getElementById('workout-progress-fill').style.width = `${progress}%`;
+
+    document.getElementById('exercise-view').classList.remove('hidden');
+    document.getElementById('rest-view').classList.add('hidden');
+}
+
+function completeEx() {
+    toggleExercise(workoutState.currentIndex);
+    
+    if (workoutState.currentIndex < state.daily.workout.exercises.length - 1) {
+        startRest();
+    } else {
+        finishWorkout();
+    }
+}
+
+function startRest() {
+    workoutState.isResting = true;
+    workoutState.timeLeft = 20;
+    
+    document.getElementById('exercise-view').classList.add('hidden');
+    document.getElementById('rest-view').classList.remove('hidden');
+    
+    const nextEx = state.daily.workout.exercises[workoutState.currentIndex + 1];
+    document.getElementById('next-ex-preview').textContent = `NEXT: ${nextEx.name.toUpperCase()}`;
+    
+    // Announce rest and next ex
+    speak(`Rest for 20 seconds. Next up: ${nextEx.name}.`);
+    
+    updateRestTimer();
+    workoutState.timer = setInterval(() => {
+        workoutState.timeLeft--;
+        updateRestTimer();
+        
+        // Countdown last 3 seconds
+        if (workoutState.timeLeft <= 3 && workoutState.timeLeft > 0) {
+            speak(workoutState.timeLeft.toString());
+        }
+
+        if (workoutState.timeLeft <= 0) {
+            skipRest();
+        }
+    }, 1000);
+}
+
+function updateRestTimer() {
+    document.getElementById('rest-timer').textContent = workoutState.timeLeft;
+}
+
+function skipRest() {
+    clearInterval(workoutState.timer);
+    workoutState.isResting = false;
+    workoutState.currentIndex++;
+    renderWorkoutStep();
+
+    const ex = state.daily.workout.exercises[workoutState.currentIndex];
+    speak(`Begin: ${ex.name}, ${ex.reps} ${ex.unit}.`);
+}
+
+function finishWorkout() {
+    speak("Workout complete! You crushed it! Great job today.");
+    alert("Workout Complete! You crushed it! 🔥");
+    closeWorkout();
+}
+
+function closeWorkout() {
+    clearInterval(workoutState.timer);
+    workoutState.active = false;
+    document.getElementById('workout-overlay').classList.add('hidden');
+    render();
 }
 
 function logWeight() {
